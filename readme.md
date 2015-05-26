@@ -5,8 +5,9 @@ You can build the project with
 ```sh
 ./run-typescript.py --main ./src/RawGobstones.ts
 ```
+execute the file *./bin/index.html* in your favourite browser. Program execution result will be available in the console's output.
 
-and you can purge the project with
+You can purge the project with
 
 ```sh
 ./run-typescript.py --purge
