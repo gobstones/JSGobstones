@@ -30,6 +30,10 @@ class ClonnableBoard extends Board {
 		this.parent = parent
 	}
 		
+	createCell():ICell {
+		return new ClonnableCell()
+	}
+		
 	/* Board API */
 		
 	putStone(color:Color) {

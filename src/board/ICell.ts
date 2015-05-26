@@ -22,4 +22,5 @@ interface ICell {
   existStones(color:Color):boolean  
   numberOfStones(color:Color):number   
   clear()
+  copyFrom(otherCell:ICell)
 }

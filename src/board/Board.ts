@@ -25,7 +25,7 @@ class Board implements IBoard {
 		
 	size:Dimension;
 	head:Point;
-	cells:Array<Array<Cell>>;
+	cells:Array<Array<ICell>>;
 
 	constructor(size:Dimension) {
 		this.size = size
@@ -37,13 +37,17 @@ class Board implements IBoard {
 	getHead():Point  	{ return this.head  }
 	getCells():Array<Array<ICell>> { return this.cells }
 	
+	createCell():ICell {
+		return new Cell()
+	}
+	
 	initializeBoard() {
 		this.cells = new Array<Array<Cell>>();
 		this.getRegion().eachPoint((point:Point) => {
 			if (this.cells[point.y] == null) {
 				this.cells[point.y] = new Array<Cell>();
 			}
-			this.cells[point.y][point.x] = new Cell()	
+			this.cells[point.y][point.x] = this.createCell()	
 		})
 	}
 	
@@ -51,7 +55,7 @@ class Board implements IBoard {
 		return new Region(new Point(0,0), this.size)
 	}
 	
-	getCurrentCell():Cell {
+	getCurrentCell():ICell {
 		return this.cells[this.head.y][this.head.x];
 	}
 	

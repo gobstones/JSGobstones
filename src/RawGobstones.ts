@@ -15,23 +15,43 @@
 /// <reference path="./language/GobstonesBuiltins.ts" />
 /// <reference path="./language/GobstonesConstants.ts" />
 /// <reference path="./board/Board.ts" />
+/// <reference path="./board/ClonnableBoard.ts" />
 /// <reference path="./board/IBoard.ts" />
 /// <reference path="./board/BoardPrinter.ts" />
+/// <reference path="./language/GobstonesPrimitives.ts" />
+
+
 // function
+var puedePonerCuadrado = declareFunction(function (t) {
+    var puede = true
+    foreach(gbsRange(minDir(), maxDir()), function (d) {
+        if (puedeMover(t, d)) {                    
+            Mover(t, d)
+        } else {
+            puede = false
+        }
+    });
+    
+    return(puede)
+})
+
 // procedure
 function PonerCuadrado(t, c) {
     foreach(gbsRange(minDir(), maxDir()), function (d) {
-        Poner(t, c);
-        Mover(t, d);
+        Poner(t, c)
+        Mover(t, d)
     });
 }
+
 // program
 function program(t) {
     //Mover(t, Norte)
     //Poner(t, Verde)
-    PonerCuadrado(t, Azul);        
+    if (puedePonerCuadrado(t)) {
+        PonerCuadrado(t, Azul);     
+    }   
 }
 
-var t:IBoard = new Board(new Dimension(4, 4));
+var t:IBoard = new ClonnableBoard(new Dimension(4, 4));
 program(t);
 (new BoardPrinter()).print(t);

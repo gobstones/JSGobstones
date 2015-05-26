@@ -24,11 +24,23 @@ function Mover(board:IBoard, direction:Direction) {
 }
 
 function Poner(board:IBoard, color:Color) {
-	board.putStone(color);
+	board.putStone(color)
 }
 
 function Sacar(board:IBoard, color:Color) {
-	board.takeStone(color);
+	board.takeStone(color)
+}
+
+function puedeMover(board:IBoard, direction:Direction):boolean {
+	return board.canMove(direction)
+}
+
+function hayBolitas(board:IBoard, color:Color):boolean {
+	return board.existStones(color)
+}
+
+function nroBolitas(board:IBoard, color:Color):number {
+	return board.numberOfStones(color)
 }
 
 function BOOM(message) {
