@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>JSGobstones basic gui</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+
+	{% gobstones:code %}
+  
+    <style>
+      body {
+        padding-top: 50px;
+      }
+      .notice {
+        padding: 40px 15px;
+        text-align: center;
+      }
+      
+      #inputCode {
+        width: 100%;
+        min-height: 400px;
+      }
+      
+      #outputBoard {
+        font-family: 'Consolas', 'Courier New'
+      }
+      
+      .panel {
+        margin-top: 20px;
+      }
+
+    </style>
+    
+    <script type="text/javascript">
+    
+      var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+      };
+    
+      function escapeHtml(string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+          return entityMap[s];
+        });
+      }
+    
+      function modeGBS() {
+        $("#modeGBS").addClass("active");
+        $("#modeJS").removeClass("active");
+      }
+      
+      function modeJS() {
+        $("#modeJS").addClass("active");
+        $("#modeGBS").removeClass("active");
+      }
+      
+      function execute() {
+        var result = "Couldn't obtain an output...";
+        try {
+          if ($("#modeJS").hasClass("active")) {
+            var jsprogram = "function tempF() {\n " + $("#inputCode").val() + " \n} tempF();";
+            console.log("Executing:\n" + jsprogram);
+            var evalResult = eval(jsprogram);            
+            console.log("Eval result:\n" + evalResult);
+            result = (new BoardPrinter()).toString(evalResult);
+            result = escapeHtml(result).replace("\n", "<br/>").replace(" ", "&nbsp;");                 
+          } else {
+            result = parser.parse($("#inputCode").val()); 
+          }
+        } catch(e) {
+          result = e;
+        }
+        $("#outputBoard").html(result);
+      }
+    </script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">JSGobstones</a>
+        </div>
+        <!--<div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>--><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="notice">
+        <h1>JSGobstones</h1>
+        <p>Write the Gobstones code below and press "execute" to calculate the output board. You may write JSGobstones code or the raw JavaScript code that invokes JSGobstones' builtins. When executing raw JavaScript, your final board has to be returned as the last command of your code.</p>
+      
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Input code 
+           <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+            <button type="button" id="modeGBS" onclick="modeGBS()" class="btn btn-default active">Gobstones</button>
+            <button type="button" id="modeJS" onclick="modeJS()" class="btn btn-default">Javascript</button>
+          </div>
+        </h3>
+        </div>
+        <div class="panel-body">
+          <textarea id="inputCode"></textarea>
+        </div>
+      </div>
+      
+      <button type="button" class="btn btn-primary" onclick="execute()">Execute</button>
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Output board</h3>
+        </div>
+        <div class="panel-body"> 
+          <pre id="outputBoard">The board will be printed here.</pre>
+        </div>
+      </div>
+      
+      </div>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>    
+    
+    <script>
+      $(document).delegate('#inputCode', 'keydown', function(e) {
+        var keyCode = e.keyCode || e.which;
+      
+        if (keyCode == 9) {
+          e.preventDefault();
+          var start = $(this).get(0).selectionStart;
+          var end = $(this).get(0).selectionEnd;
+      
+          // set textarea value to: text before caret + tab + text after caret
+          $(this).val($(this).val().substring(0, start)
+                      + "\t"
+                      + $(this).val().substring(end));
+      
+          // put caret at right position again
+          $(this).get(0).selectionStart =
+          $(this).get(0).selectionEnd = start + 1;
+        }
+      });
+    </script>
+  </body>
+</html>

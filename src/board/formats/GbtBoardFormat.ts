@@ -21,7 +21,7 @@ class GbtBoardFormat implements IBoardFormat {
 	}
 	
 	dump(board:IBoard):string {
-		var output:string = "[\n"
+		var output:string = ""
     	var rows:Array<string> = this.numbered_contents(board)
     	var i:number = 0
 		var sep:string
@@ -29,12 +29,11 @@ class GbtBoardFormat implements IBoardFormat {
 	      if (i == rows.length - 1) {
 	        sep = ''
 		  } else {
-	        sep = ','
+	        sep = '\n'
 		  }
-	      output += '"'+row+'"'+sep+'\n'
+	      output += row+sep
 	      i += 1
 		})
-	    output += ']\n'
 		return output
 	}
 	
@@ -83,7 +82,6 @@ class GbtBoardFormat implements IBoardFormat {
 				out[j][i] = ' '
 			})
 		}) 	    
-		console.log(out)
 		
 	    // row borders
 		foreach(range(w), (x:number)=> {

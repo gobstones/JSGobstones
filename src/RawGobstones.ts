@@ -50,8 +50,16 @@ function program(t) {
     if (puedePonerCuadrado(t)) {
         PonerCuadrado(t, Azul);     
     }   
+    
+    return ([2,3])
 }
 
 var t:IBoard = new ClonnableBoard(new Dimension(4, 4));
-program(t);
+console.log(program(t));
 (new BoardPrinter()).print(t);
+
+var textProgram = `
+program {
+    Skip
+}
+` 

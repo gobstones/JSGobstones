@@ -13,6 +13,11 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+function repeat(n:number, f:Function) {
+  for(var i = n; i > 0; i--) {
+    f();
+  }
+}
 
 function foreach(arr:Array<any>, f:Function) {
   for(var i = 0; i < arr.length; i++) {

@@ -70,6 +70,12 @@ def write_file(filename, content):
     
 def delete_file(filename):
     os.unlink(filename)
+    
+def read_file(filename):
+    f = open(filename, "r")
+    content = f.read()
+    f.close()
+    return content
 
 ## Parser for option switches
 
@@ -213,7 +219,7 @@ class RunTypescript(CmdApplication):
             "--main X" : self.build,
             "--purge"  : self.purge,
             "--no-build-html" : None,
-            "--no-clear" : None
+            "--no-clean" : None
         }
         
     def purge(self):
@@ -229,13 +235,13 @@ class RunTypescript(CmdApplication):
         
         bin_dir = os.path.join(os.getcwd(), "bin")
 
-        if self.options["clear"]:
+        if self.options["clean"]:
             if os.path.exists(bin_dir):
                 shutil.rmtree(bin_dir)    
             os.mkdir(bin_dir)
             
         jsfiles = get_files_matching(os.path.dirname(mainfile), "*.js")        
-        jsfiles = filter(lambda f: not mainfile[:-3] + ".js" in f, jsfiles)
+        jsfiles = filter(lambda f: not mainfile[:-3] + ".js" in f and not "/gui/" in f, jsfiles)
         for f in jsfiles:
             os.system("mv %s %s" % (f, bin_dir))        
         os.system("mv %s %s" % (mainfile[:-3]+".js", bin_dir))
@@ -245,16 +251,22 @@ class RunTypescript(CmdApplication):
             jsfiles = map(lambda f: os.path.basename(f), jsfiles)                    
             html = self.render_html(os.path.basename(mainfile)[:-3]+".js", jsfiles)
             write_file(os.path.join(bin_dir, "index.html"), html)
+            
+            for f in get_files_matching(os.path.dirname(mainfile) + "/gui", "*"):    
+                os.system("cp -R ./src/gui/js %s" % (bin_dir,))
+                os.system("cp -R ./src/gui/fonts %s" % (bin_dir,))
+                os.system("cp -R ./src/gui/css %s" % (bin_dir,))
             #os.system("google-chrome %s/index.html" % (os.getcwd(),))
             #os.system("cat %s/index.html" % (os.getcwd(),))
         print "Ready"
 
     def render_html(self, mainf, jsfiles):
-        output = "<html><head>\n"
+        scripts = []
         for jsfile in jsfiles + [mainf]:
-            output += "<script type=\"text/javascript\" src=\"%s\"></script>\n" % (jsfile,)
-        output += "</head></html>"
-        return output
+            scripts.append("<script type=\"text/javascript\" src=\"%s\"></script>" % (jsfile,))
+        html = read_file(os.path.join(os.getcwd(), "src", "gui", "index.template"))
+        html = html.replace("{% gobstones:code %}", "\n".join(scripts))
+        return html
         
         
 RunTypescript().start()
