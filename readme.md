@@ -13,10 +13,10 @@ You can purge the project with
 ./compile.py --purge
 ```
 
-# Generating Parser
+# Node packages needed
 
-```sh
-./pegjs ./src/parser/gobstones.pegjs ./src/parser/gobstones.ts
-```
+- pegjs
+- sweetjs
+- typescript
 
 **Author**: Ary Pablo Batista
