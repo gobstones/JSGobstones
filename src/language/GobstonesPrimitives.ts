@@ -4,3 +4,10 @@ function declareFunction(f:Function):Function {
         return f.apply(this, arguments)
     }
 }
+
+function returnVars() {
+  foreach(arguments, function (arg) {
+      console.log(arg + " -> " + this[arg])
+      console.log("OK")
+  });
+}
