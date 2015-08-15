@@ -229,22 +229,34 @@ class RunTypescript(CmdApplication):
             shutil.rmtree(bin_dir)  
         print "Ready"
             
-    def build(self, mainfile):
+    def build(self, mainfile, target="ES5"):
         print "Compiling %s" % (mainfile,)
-        os.system("tsc %s" % (mainfile,))
+        this_dir = os.path.dirname(__file__)
         
-        bin_dir = os.path.join(os.getcwd(), "bin")
+        bin_dir = os.path.join(this_dir, "bin")
+        
+        print "Compiling parser"
+        os.system("pegjs ./src/parser/GobstonesParser.pegjs ./src/parser/GobstonesParser.ts".replace("\./", this_dir))
+        
+        print "Building macro's file"
+        os.system(os.path.join(this_dir, "src", "compiler", "GenerateMacrosFile.py"))
+        
+        output = os.path.join(bin_dir, os.path.basename(mainfile)[:-3] + ".js")
+        
+        build_cmd = "tsc --sourcemap --target %s --out %s %s" % (target, output, mainfile)
 
         if self.options["clean"]:
             if os.path.exists(bin_dir):
                 shutil.rmtree(bin_dir)    
             os.mkdir(bin_dir)
+        
+        os.system(build_cmd)
             
         jsfiles = get_files_matching(os.path.dirname(mainfile), "*.js")        
         jsfiles = filter(lambda f: not mainfile[:-3] + ".js" in f and not "/gui/" in f, jsfiles)
         for f in jsfiles:
             os.system("mv %s %s" % (f, bin_dir))        
-        os.system("mv %s %s" % (mainfile[:-3]+".js", bin_dir))
+        #os.system("mv %s %s" % (mainfile[:-3]+".js", bin_dir))
         
         if self.options["build-html"]:
             print "Building html file..."
