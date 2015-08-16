@@ -19,6 +19,10 @@
 /// <reference path="../board/Board.ts" />
 
 
+function IrAlBorde(board:IBoard, direction: Direction) {
+	board.goToBoundary(direction)
+}
+
 function Mover(board:IBoard, direction:Direction) {
 	board.move(direction)
 }
