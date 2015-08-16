@@ -16,6 +16,7 @@ You can purge the project with
 # Node packages needed
 
 - pegjs
+- pegjs-util
 - sweetjs
 - typescript
 

@@ -219,7 +219,8 @@ class RunTypescript(CmdApplication):
             "--main X" : self.build,
             "--purge"  : self.purge,
             "--no-build-html" : None,
-            "--no-clean" : None
+            "--no-clean" : None,
+            "--no-build-parser": None
         }
         
     def purge(self):
@@ -235,8 +236,9 @@ class RunTypescript(CmdApplication):
         
         bin_dir = os.path.join(this_dir, "bin")
         
-        print "Compiling parser"
-        os.system("pegjs ./src/parser/GobstonesParser.pegjs ./src/parser/GobstonesParser.ts".replace("\./", this_dir))
+        if self.options["build-parser"]:
+            print "Compiling parser"
+            os.system("pegjs -e \"var parser\" ./src/parser/GobstonesTranspiler.pegjs ./src/parser/GobstonesTranspiler.js".replace("\./", this_dir))
         
         print "Building macro's file"
         os.system(os.path.join(this_dir, "src", "compiler", "GenerateMacrosFile.py"))

@@ -1,3 +1,5 @@
+/// <reference path="../utilities/Functional.ts" />
+	
 function declareFunction(f:Function):Function {
     return function () {
         arguments[0] = arguments[0].clone()
@@ -6,8 +8,9 @@ function declareFunction(f:Function):Function {
 }
 
 function returnVars() {
-  foreach(arguments, function (arg) {
-      console.log(arg + " -> " + this[arg])
+  for(var i = 0; i < arguments.length; i++) {
+  	  var arg = arguments[i];
+      console.log(arg[0] + " -> " + arg[1])
       console.log("OK")
-  });
+  };
 }
