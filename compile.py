@@ -100,13 +100,13 @@ class RunTypescript(object):
         print "Ready"
 
 
-parser = argparse.ArgumentParser()
-group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument("-i", "--install", action="store_true")
-group.add_argument("-m", "--main")
-group.add_argument("-p", "--purge", action="store_true")
-parser.add_argument("--no-build-parser",action="store_false", dest="build_parser")
-parser.add_argument("--no-clear",action="store_false", dest="clean")
-args = parser.parse_args()
-
-RunTypescript().run(args)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-i", "--install", action="store_true")
+    group.add_argument("-m", "--main")
+    group.add_argument("-p", "--purge", action="store_true")
+    parser.add_argument("--no-build-parser",action="store_false", dest="build_parser")
+    parser.add_argument("--no-clear",action="store_false", dest="clean")
+    args = parser.parse_args()
+    RunTypescript().run(args)
