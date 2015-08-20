@@ -17,6 +17,8 @@
 import argparse
 import os, os.path
 import sys
+import fnmatch
+import os, shutil
 
 def append_file(filename, content):
     f = open(filename, 'a')
@@ -158,10 +160,6 @@ class _GetchWindows:
     def __call__(self):
         import msvcrt
         return msvcrt.getch()
-
-
-import fnmatch
-import os, shutil
 
 def get_files_matching(directory, matching):
     matches = []
