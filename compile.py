@@ -210,7 +210,8 @@ def get_files_matching(directory, matching):
         matches.append(os.path.join(root, filename))
     return matches
 
-BIN_DIR = os.path.join(this_dir, "public", "jsgobstones")
+THIS_DIR = os.path.dirname(__file__)
+BIN_DIR = os.path.join(THIS_DIR, "public", "jsgobstones")
 
 class RunTypescript(CmdApplication):
 
@@ -239,14 +240,13 @@ class RunTypescript(CmdApplication):
 
     def build(self, mainfile, target="ES5"):
         print "Compiling %s" % (mainfile,)
-        this_dir = os.path.dirname(__file__)
 
         if self.options["build-parser"]:
             print "Compiling parser"
-            os.system("pegjs -e \"var parser\" ./src/parser/GobstonesTranspiler.pegjs ./src/parser/GobstonesTranspiler.js".replace("\./", this_dir))
+            os.system("pegjs -e \"var parser\" ./src/parser/GobstonesTranspiler.pegjs ./src/parser/GobstonesTranspiler.js".replace("\./", THIS_DIR))
 
         print "Building macro's file"
-        os.system(os.path.join(this_dir, "src", "compiler", "GenerateMacrosFile.py"))
+        os.system(os.path.join(THIS_DIR, "src", "compiler", "GenerateMacrosFile.py"))
 
         output = os.path.join(BIN_DIR, os.path.basename(mainfile)[:-3] + ".js")
 
