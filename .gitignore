@@ -4,3 +4,7 @@ bower_components/
 npm-debug.log
 node_modules/
 *.js.map
+.sass-cache/
+public/css/style.css
+public/fonts
+public/jsgobstones
