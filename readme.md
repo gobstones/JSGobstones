@@ -1,5 +1,11 @@
 # JSGobstones
 
+To install the project execute:
+
+```sh
+./compile.py --install
+```
+
 You can build the project with
 
 ```sh
@@ -13,8 +19,5 @@ You can purge the project with
 ./compile.py --purge
 ```
 
-```sh
-gem install sass
-```
 
 **Author**: Ary Pablo Batista
