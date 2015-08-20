@@ -1,2 +1,4 @@
 bin/
 src/parser/gobstones.ts
+bower_components/
+npm-debug.log

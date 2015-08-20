@@ -1,0 +1,33 @@
+//- index.jade
+extends ./layout.jade
+
+block content
+  div#page-content-wrapper
+      
+    div.page-content.inset
+
+      div.notice
+        h1 JSGobstones
+          p Write the Gobstones code below and press "execute" to calculate the output board. You may write JSGobstones code or the raw JavaScript code that invokes JSGobstones' builtins. When executing raw JavaScript, your final board has to be returned as the last command of your code.
+
+            div.panel.panel-primary
+              div.panel-heading
+                h3.panel-title Input code 
+                  div.btn-group.btn-group-sm(role='group' aria-label='Small button group')
+                    button#modeGBS.btn.btn-default.active(type='button' onclick='modeGBS()') Gobstones
+                    button#modeJS.btn.btn-default(type='button' onclick='modeJS()') Javascript
+                
+              
+              
+            div.panel-body
+              div#editor
+
+      
+              button.btn.btn-primary(type='button' onclick='execute()') Execute
+        
+            div.panel.panel-default
+              div.panel-heading
+                h3.panel-title Output board
+              
+              div.panel-body
+                pre#outputBoard The board will be printed here.

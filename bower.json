@@ -1,0 +1,36 @@
+{
+  "name": "Gobstones Platform",
+  "version": "0.1.0",
+  "homepage": "https://github.com/gobstones/jsgobstones",
+  "authors": [
+    "Ary Pablo Batista <arypbatista@gmail.com>"
+  ],
+  "description": "A Gobstones and XGobstones implementation that includes a Web Platform",
+  "main": "app.js",
+  "keywords": [
+    "gobstones",
+    "xgobstones",
+    "implementation",
+    "language",
+    "ide",
+    "web",
+    "platform"
+  ],
+  "license": "GPLv3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angularjs": "~1.4.4",
+    "bootstrap-sass-official": "~3.3.5",
+    "bootstrap": "~3.3.5",
+    "fontawesome": "~4.4.0",
+    "ace": "~1.2.0",
+    "jquery": "~2.1.4"
+  }
+}

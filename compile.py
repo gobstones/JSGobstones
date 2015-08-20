@@ -234,7 +234,7 @@ class RunTypescript(CmdApplication):
         print "Compiling %s" % (mainfile,)
         this_dir = os.path.dirname(__file__)
         
-        bin_dir = os.path.join(this_dir, "bin")
+        bin_dir = os.path.join(this_dir, "public", "jsgobstones")
         
         if self.options["build-parser"]:
             print "Compiling parser"
@@ -260,27 +260,7 @@ class RunTypescript(CmdApplication):
             os.system("mv %s %s" % (f, bin_dir))        
         #os.system("mv %s %s" % (mainfile[:-3]+".js", bin_dir))
         
-        if self.options["build-html"]:
-            print "Building html file..."
-            jsfiles = map(lambda f: os.path.basename(f), jsfiles)                    
-            html = self.render_html(os.path.basename(mainfile)[:-3]+".js", jsfiles)
-            write_file(os.path.join(bin_dir, "index.html"), html)
-            
-            for f in get_files_matching(os.path.dirname(mainfile) + "/gui", "*"):    
-                os.system("cp -R ./src/gui/js %s" % (bin_dir,))
-                os.system("cp -R ./src/gui/fonts %s" % (bin_dir,))
-                os.system("cp -R ./src/gui/css %s" % (bin_dir,))
-            #os.system("google-chrome %s/index.html" % (os.getcwd(),))
-            #os.system("cat %s/index.html" % (os.getcwd(),))
+        os.system("gulp")
         print "Ready"
 
-    def render_html(self, mainf, jsfiles):
-        scripts = []
-        for jsfile in jsfiles + [mainf]:
-            scripts.append("<script type=\"text/javascript\" src=\"%s\"></script>" % (jsfile,))
-        html = read_file(os.path.join(os.getcwd(), "src", "gui", "index.template"))
-        html = html.replace("{% gobstones:code %}", "\n".join(scripts))
-        return html
-        
-        
 RunTypescript().start()

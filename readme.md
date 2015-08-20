@@ -13,11 +13,8 @@ You can purge the project with
 ./compile.py --purge
 ```
 
-# Node packages needed
-
-- pegjs
-- pegjs-util
-- sweetjs
-- typescript
+```sh
+gem install sass
+```
 
 **Author**: Ary Pablo Batista
