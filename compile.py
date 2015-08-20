@@ -21,23 +21,19 @@ import fnmatch
 import os, shutil
 
 def append_file(filename, content):
-    f = open(filename, 'a')
-    f.write(content)
-    f.close()
+    with open(filename, 'a') as f:
+        f.write(content)
 
 def write_file(filename, content):
-    f = open(filename, 'w')
-    f.write(content)
-    f.close()
+    with open(filename, 'w') as f:
+        f.write(content)
 
 def delete_file(filename):
     os.unlink(filename)
 
 def read_file(filename):
-    f = open(filename, "r")
-    content = f.read()
-    f.close()
-    return content
+    with open(filename, 'r') as f:
+        return f.read()
 
 ## Parser for option switches
 
