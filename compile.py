@@ -210,7 +210,7 @@ def get_files_matching(directory, matching):
         matches.append(os.path.join(root, filename))
     return matches
 
-
+BIN_DIR = os.path.join(this_dir, "public", "jsgobstones")
 
 class RunTypescript(CmdApplication):
 
@@ -233,16 +233,13 @@ class RunTypescript(CmdApplication):
 
     def purge(self):
         print "The Purge begins!"
-        bin_dir = os.path.join(os.getcwd(), "bin")
-        if os.path.exists(bin_dir):
-            shutil.rmtree(bin_dir)
+        if os.path.exists(BIN_DIR):
+            shutil.rmtree(BIN_DIR)
         print "Ready"
 
     def build(self, mainfile, target="ES5"):
         print "Compiling %s" % (mainfile,)
         this_dir = os.path.dirname(__file__)
-
-        bin_dir = os.path.join(this_dir, "public", "jsgobstones")
 
         if self.options["build-parser"]:
             print "Compiling parser"
@@ -251,22 +248,22 @@ class RunTypescript(CmdApplication):
         print "Building macro's file"
         os.system(os.path.join(this_dir, "src", "compiler", "GenerateMacrosFile.py"))
 
-        output = os.path.join(bin_dir, os.path.basename(mainfile)[:-3] + ".js")
+        output = os.path.join(BIN_DIR, os.path.basename(mainfile)[:-3] + ".js")
 
         build_cmd = "tsc --sourcemap --target %s --out %s %s" % (target, output, mainfile)
 
         if self.options["clean"]:
-            if os.path.exists(bin_dir):
-                shutil.rmtree(bin_dir)
-            os.mkdir(bin_dir)
+            if os.path.exists(BIN_DIR):
+                shutil.rmtree(BIN_DIR)
+            os.mkdir(BIN_DIR)
 
         os.system(build_cmd)
 
         jsfiles = get_files_matching(os.path.dirname(mainfile), "*.js")
         jsfiles = filter(lambda f: not mainfile[:-3] + ".js" in f and not "/gui/" in f, jsfiles)
         for f in jsfiles:
-            os.system("mv %s %s" % (f, bin_dir))
-        #os.system("mv %s %s" % (mainfile[:-3]+".js", bin_dir))
+            os.system("mv %s %s" % (f, BIN_DIR))
+        #os.system("mv %s %s" % (mainfile[:-3]+".js", BIN_DIR))
 
         os.system("gulp")
         print "Ready"
