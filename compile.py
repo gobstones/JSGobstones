@@ -249,8 +249,10 @@ class RunTypescript(CmdApplication):
         os.system(os.path.join(THIS_DIR, "src", "compiler", "GenerateMacrosFile.py"))
 
         output = os.path.join(BIN_DIR, os.path.basename(mainfile)[:-3] + ".js")
+        test_output = os.path.join(BIN_DIR, os.path.basename(mainfile)[:-3] + "-tests.js")
 
         build_cmd = "tsc --sourcemap --target %s --out %s %s" % (target, output, mainfile)
+        build_tests = "tsc --sourcemap --target %s --out %s %s" % (target, test_output, "./tests/Test.ts")
 
         if self.options["clean"]:
             if os.path.exists(BIN_DIR):
@@ -258,6 +260,8 @@ class RunTypescript(CmdApplication):
             os.mkdir(BIN_DIR)
 
         os.system(build_cmd)
+        
+        os.system(build_tests)
 
         jsfiles = get_files_matching(os.path.dirname(mainfile), "*.js")
         jsfiles = filter(lambda f: not mainfile[:-3] + ".js" in f and not "/gui/" in f, jsfiles)

@@ -19,6 +19,8 @@
 /// <reference path="./board/IBoard.ts" />
 /// <reference path="./board/BoardPrinter.ts" />
 /// <reference path="./language/GobstonesPrimitives.ts" />
+/// <reference path="./parser/Parser.ts" />
+/// <reference path="./JSGobstones.ts" />
 
 
 // function
@@ -58,8 +60,9 @@ var t:IBoard = new ClonnableBoard(new Dimension(4, 4));
 console.log(program(t));
 (new BoardPrinter()).print(t);
 
-var textProgram = `
-program {
-    Skip
-}
-` 
+var textProgram = "" +
+"program {"+
+"    Skip "+
+"}        "
+
+console.log(parser.parse(textProgram))

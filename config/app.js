@@ -24,6 +24,7 @@ module.exports = (function () {
   var app = express();
   // Setup static public directory
   app.use(express.static(__dirname + '/../public'));
+  app.use('/bower_components', express.static(__dirname + '/../bower_components'));
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/../views');
     

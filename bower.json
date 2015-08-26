@@ -31,6 +31,7 @@
     "bootstrap": "~3.3.5",
     "fontawesome": "~4.4.0",
     "ace": "~1.2.0",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "QUnit": "~1.11.0"
   }
 }
