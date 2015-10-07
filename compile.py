@@ -14,194 +14,26 @@
     along with JSGobstones.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import argparse
 import os, os.path
 import sys
-
-class CmdApplication(object):
-
-    def initialize(self):
-        self.input_key = _Getch()
-        self.options = None
-        self.arguments = None
-
-    def usage(self):
-        return "No usage info.\n"
-
-    def get_option_handlers(self):
-        return {}
-
-    def get_option_switches(self):
-        return self.get_option_handlers().keys()
-
-    def error(self, message):
-        sys.stderr.write(message)
-
-    def get_option_name(self, option_switch):
-        return remove_no(normalize_option_name(option_switch.split(" ")[0]))
-
-    def start(self):
-        self.initialize()
-        self.arguments, self.options = get_options(self.get_option_switches())
-
-        options_processed = []
-        for option_switch, option_handler in self.get_option_handlers().iteritems():
-            option = self.get_option_name(option_switch)
-            if self.options[option] and not option_handler is None:
-                if isinstance(self.options[option], list):
-                    option_handler(*self.options[option])
-                else:
-                    option_handler()
-
-                options_processed += [option]
-
-        if len(options_processed) == 0:
-            self.error(self.usage().replace('<CMDLINE>', sys.argv[0]))
-            sys.exit(1)
+import fnmatch
+import os, shutil
 
 def append_file(filename, content):
-    f = open(filename, 'a')
-    f.write(content)
-    f.close()
+    with open(filename, 'a') as f:
+        f.write(content)
 
 def write_file(filename, content):
-    f = open(filename, 'w')
-    f.write(content)
-    f.close()
+    with open(filename, 'w') as f:
+        f.write(content)
 
 def delete_file(filename):
     os.unlink(filename)
 
 def read_file(filename):
-    f = open(filename, "r")
-    content = f.read()
-    f.close()
-    return content
-
-## Parser for option switches
-
-def remove_no(option_name):
-    if option_name[:3] == "no-":
-        return option_name[3:]
-    else:
-        return option_name
-
-def normalize_option_name(option_name):
-    if option_name[:2] == "--":
-        return option_name[2:]
-    else:
-        return option_name
-
-def get_options(option_switches):
-    return parse_options(option_switches, sys.argv)
-
-def default_options(option_switches):
-    opt = {}
-    for o in option_switches:
-        o = o.split(' ')
-        sw = o[0]
-        if sw[:3] == 'no-':
-            neg = True
-            sw = sw[3:]
-        else:
-            neg = False
-        if len(o) == 1:
-            opt[sw] = neg
-        else:
-            opt[sw] = []
-    return opt
-
-def get_option_names(option_switches):
-    return [option.split(' ')[0] for option in option_switches]
-
-def parse_options(option_switches, args, max_args=None):
-    arguments = []
-    option_names = get_option_names(option_switches)
-    switches = [normalize_option_name(s) for s in option_switches]
-    args = map(lambda arg: normalize_option_name(arg) if arg in option_names else arg, args)
-    opt = default_options(switches)
-    i = 1
-    n = len(args)
-
-    # all args
-    while i < len(args):
-        o = None
-
-        # select matching option
-        for oi in switches:
-            oi = oi.split(' ')
-            if oi[0] == args[i]:
-                o = oi
-                break
-
-        # This is an argument, not an option
-        if o is None:
-            if len(arguments) == max_args:
-                return False
-            arguments.append(args[i])
-            i += 1
-            continue
-
-        # Check if single-word option
-        # sw = current option
-        sw = o[0]
-        if len(o) == 1:
-            if sw[:3] == 'no-':
-                neg = True
-                sw = sw[3:]
-            else:
-                neg = False
-            opt[sw] = not neg
-            i += 1
-        # If has parameters
-        else:
-            k = 1
-            i += 1
-            while k < len(o):
-                if i >= n: return False
-                opt[sw].append(args[i])
-                i += 1
-                k += 1
-    return arguments, opt
-
-class _Getch:
-    """Gets a single character from standard input.  Does not echo to the
-screen."""
-    def __init__(self):
-        try:
-            self.impl = _GetchWindows()
-        except ImportError:
-            self.impl = _GetchUnix()
-
-    def __call__(self): return self.impl()
-
-
-class _GetchUnix:
-    def __init__(self):
-        import tty, sys
-
-    def __call__(self):
-        import sys, tty, termios
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
-
-
-class _GetchWindows:
-    def __init__(self):
-        import msvcrt
-
-    def __call__(self):
-        import msvcrt
-        return msvcrt.getch()
-
-
-import fnmatch
-import os, shutil
+    with open(filename, 'r') as f:
+        return f.read()
 
 def get_files_matching(directory, matching):
     matches = []
@@ -213,17 +45,16 @@ def get_files_matching(directory, matching):
 THIS_DIR = os.path.dirname(__file__)
 BIN_DIR = os.path.join(THIS_DIR, "public", "jsgobstones")
 
-class RunTypescript(CmdApplication):
+class RunTypescript(object):
 
-    def get_option_handlers(self):
-        return {
-            "--main X" : self.build,
-            "--purge"  : self.purge,
-            "--no-build-html" : None,
-            "--no-clean" : None,
-            "--no-build-parser": None,
-            "--install" : self.install
-        }
+    def run(self, args):
+        self.options = args
+        if args.install:
+            self.install()
+        elif args.purge:
+            self.purge()
+        elif args.main:
+            self.build(args.main)
 
     def install(self):
         print "Installing JSGobstones"
@@ -241,7 +72,7 @@ class RunTypescript(CmdApplication):
     def build(self, mainfile, target="ES5"):
         print "Compiling %s" % (mainfile,)
 
-        if self.options["build-parser"]:
+        if self.options.build_parser:
             print "Compiling parser"
             os.system("pegjs -e \"var parser\" ./src/parser/GobstonesTranspiler.pegjs ./src/parser/GobstonesTranspiler.js".replace("\./", THIS_DIR))
 
@@ -254,7 +85,7 @@ class RunTypescript(CmdApplication):
         build_cmd = "tsc --sourcemap --target %s --out %s %s" % (target, output, mainfile)
         build_tests = "tsc --sourcemap --target %s --out %s %s" % (target, test_output, "./tests/Test.ts")
 
-        if self.options["clean"]:
+        if self.options.clean:
             if os.path.exists(BIN_DIR):
                 shutil.rmtree(BIN_DIR)
             os.mkdir(BIN_DIR)
@@ -272,4 +103,14 @@ class RunTypescript(CmdApplication):
         os.system("gulp")
         print "Ready"
 
-RunTypescript().start()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-i", "--install", action="store_true")
+    group.add_argument("-m", "--main")
+    group.add_argument("-p", "--purge", action="store_true")
+    parser.add_argument("--no-build-parser",action="store_false", dest="build_parser")
+    parser.add_argument("--no-clear",action="store_false", dest="clean")
+    args = parser.parse_args()
+    RunTypescript().run(args)
